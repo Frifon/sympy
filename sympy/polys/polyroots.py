@@ -870,26 +870,26 @@ def roots(f, *gens, **flags):
     def _try_heuristics(f):
         """Find roots using formulas and some tricks. """
         
-        add_comment('try heuristics')
-        add_eq(f.as_expr(), 0)
+        # add_comment('try some heuristics')
+        # add_eq(f.as_expr(), 0)
         if f.is_ground:
-            add_comment('Polinomial is ground')
+            # add_comment('Polinomial is ground')
             return []
         if f.is_monomial:
-            add_comment('Polinomial is monomial')
+            # add_comment('Polinomial is monomial')
             rr = [S(0)]*f.degree()
-            add_step(rr)
+            # add_step(rr)
             return rr
 
         if f.length() == 2:
-            add_comment('length = 2')
+            # add_comment('length = 2')
             if f.degree() == 1:
-                add_comment('degree == 1')
+                # add_comment('degree == 1')
                 rr = list(map(cancel, roots_linear(f)))
-                add_step(rr)
+                # add_step(rr)
                 return rr
             else:
-                add_comment('degree != 1')
+                # add_comment('degree != 1')
                 return roots_binomial(f)
 
         result = []
@@ -901,7 +901,7 @@ def roots(f, *gens, **flags):
                 break
 
         n = f.degree()
-        add_comment('degree == ' + str(n))
+        # add_comment('degree == ' + str(n))
         if n == 1:
             result += list(map(cancel, roots_linear(f)))
         elif n == 2:
@@ -940,7 +940,7 @@ def roots(f, *gens, **flags):
     result = {}
 
     if not f.is_ground:
-        add_comment('Poly is not ground')
+        # add_comment('Poly is not ground')
         if not f.get_domain().is_Exact:
             for r in f.nroots():
                 _update_dict(result, r, 1)
@@ -977,8 +977,11 @@ def roots(f, *gens, **flags):
                         _update_dict(result, root, 1)
             else:
                 add_comment('Factorization')
+                tmp = ''
                 for factor, k in factors:
-                    add_eq(factor.as_expr(), 0)
+                    tmp += '(' + str(factor.as_expr()) + ')'
+                tmp += ' = 0'
+                add_comment(tmp)
                 for factor, k in factors:
                     # add_eq(factor.as_expr(), 0)
                     for r in _try_heuristics(Poly(factor, f.gen, field=True)):

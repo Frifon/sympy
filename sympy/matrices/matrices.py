@@ -23,9 +23,16 @@ from sympy.utilities.exceptions import SymPyDeprecationWarning
 
 from types import FunctionType
 
+from sympy.utilities.solution import add_exp, add_eq, add_step, add_comment
 
 def _iszero(x):
     """Returns True if x is zero."""
+    add_comment('Is Matrix = 0?')
+    add_step(x)
+    if (x.is_zero):
+        add_comment('Yes')
+    else:
+        add_comment('No')
     return x.is_zero
 
 
@@ -494,6 +501,9 @@ class MatrixBase(object):
 
         matrix_multiply_elementwise
         """
+        # add_comment('Multiplication of Matrices')
+        # add_step(self)
+        # add_step(other)
         if getattr(other, 'is_Matrix', False):
             # The following implmentation is equivalent, but about 5% slower
             #ma, na = A.shape
