@@ -28,6 +28,7 @@ from sympy.utilities.solution import add_exp, add_eq, add_step, add_comment
 def roots_linear(f):
     """Returns a list of roots of a linear polynomial."""
     
+    add_comment('')
     # add_comment('linear polynomial')
     add_eq(f.as_expr(), 0)
 
@@ -39,15 +40,17 @@ def roots_linear(f):
             r = factor(r)
         else:
             r = simplify(r)
-    add_comment('root = ' + str(r))
+    tmp = str(Poly(f.as_expr()).factor_list()).split(',')[2][1:]
+    add_comment(tmp + ' = ' + str(r))
     return [r]
 
 
 def roots_quadratic(f):
     """Returns a list of roots of a quadratic polynomial."""
    
-    add_comment('quadratic polynomial')
+    # add_comment('quadratic polynomial')
 
+    add_comment('')
     a, b, c = f.all_coeffs()
     dom = f.get_domain()
     add_comment('a * x ** 2 + b * x + c = 0')
@@ -60,10 +63,12 @@ def roots_quadratic(f):
             s = simplify(expr)
         return s
 
+    tmp = str(Poly(f.as_expr()).factor_list()).split(',')[2][1:]
+
     if c is S.Zero:
         add_comment('c = 0')
-        add_comment('r0 = 0')
-        add_comment('r1 = -b/a')
+        add_comment(tmp + '0 = 0')
+        add_comment(tmp + '1 = -b/a')
         r0, r1 = S.Zero, -b/a
 
         if not dom.is_Numerical:
@@ -71,7 +76,7 @@ def roots_quadratic(f):
     elif b is S.Zero:
         add_comment('b = 0')
         r = -c/a
-        add_comment('r = +-sqrt(-c/a)')
+        add_comment(tmp + ' = +-sqrt(-c/a)')
         if not dom.is_Numerical:
             R = sqrt(_simplify(r))
         else:
@@ -80,14 +85,13 @@ def roots_quadratic(f):
         r0 = R
         r1 = -R
     else:
-        d = b**2 - 4*a*c
-        add_comment('d = b ** 2 - 4 * a * c')
-        add_step(d)
-        add_comment('roots = (-b +- sqrt(d)) / (2 * a)')
-        d.clear_repr()
+        D = b**2 - 4*a*c
+        add_comment('D = b ** 2 - 4 * a * c = ' + str(D))
+        add_comment(tmp + ' = (-b +- sqrt(d)) / (2 * a)')
+        D.clear_repr()
         
         if dom.is_Numerical:
-            D = sqrt(d)
+            D = sqrt(D)
 
             r0 = (-b + D) / (2*a)
             r1 = (-b - D) / (2*a)
@@ -102,14 +106,23 @@ def roots_quadratic(f):
             r1 = E - F
 
     Roots = sorted([expand_2arg(i) for i in (r0, r1)], key=default_sort_key)
-    add_step(Roots)
+    tmp += ' ='
+    ok = 0
+    for i in Roots:
+        if (ok == 0):
+            tmp += ' ' + str(i)
+            ok = 1
+        else:
+            tmp += ', ' + str(i)
+    add_comment(tmp)
     return Roots
 
 def roots_cubic(f):
     """Returns a list of roots of a cubic polynomial."""
 
-    add_comment('cubic polynomial')
+    # add_comment('cubic polynomial')
 
+    add_comment('')
     _, a, b, c = f.monic().all_coeffs()
 
     if c is S.Zero:
@@ -222,7 +235,7 @@ def _roots_quartic_euler(p, q, r, a):
     from sympy.solvers import solve
     # solve the resolvent equation
 
-    add_comment('quartic euler polynomial')
+    # add_comment('quartic euler polynomial')
 
     x = Symbol('x')
     eq = 64*x**3 + 32*p*x**2 + (4*p**2 - 16*r)*x - q**2
@@ -360,20 +373,21 @@ def roots_quartic(f):
 def roots_binomial(f):
     """Returns a list of roots of a binomial polynomial."""
 
-    add_comment('binomial polynomial')
+    # add_comment('binomial polynomial')
+    add_comment('')
     add_eq(f.as_expr(), 0)
-
     n = f.degree()
-
+    
     a, b = f.nth(n), f.nth(0)
     alpha = (-cancel(b/a))**Rational(1, n)
-
+    beta = (-cancel(b/a))
+    tmp = str(Poly(f.as_expr()).factor_list()).split(',')[2][1:]
+    TMP = tmp
+    if (n > 1):
+        TMP += '**' + str(n)
+    add_comment(TMP + ' = ' + str(beta))
     if alpha.is_number:
         alpha = alpha.expand(complex=True)
-
-    add_comment('first coefficient = ' + str(a))
-    add_comment('second coefficient = ' + str(b))
-    add_step(alpha)
 
     roots, I = [], S.ImaginaryUnit
 
@@ -383,7 +397,17 @@ def roots_binomial(f):
 
     roots = sorted(roots, key=default_sort_key)
 
-    add_step(roots)
+    tmp += ' ='
+    ok = 0
+    for i in roots:
+        if (ok == 0):
+            tmp += ' ' + str(i)
+            ok = 1
+        else:
+            tmp += ', ' + str(i)
+
+    add_comment(tmp)
+    # add_step(roots)
 
     return roots
 
@@ -946,13 +970,13 @@ def roots(f, *gens, **flags):
                 _update_dict(result, r, 1)
         elif f.degree() == 1:
             tmp = roots_linear(f)[0]
-            add_comment('degree == 1')
-            add_comment('add root: ' + str(tmp))
+            # add_comment('degree == 1')
+            # add_comment('add root: ' + str(tmp))
             result[tmp] = 1
         elif f.degree() == 2:
-            add_comment('degree == 2')
+            # add_comment('degree == 2')
             for r in roots_quadratic(f):
-                add_comment('add root: ' + str(r))
+                # add_comment('add root: ' + str(r))
                 _update_dict(result, r, 1)
         elif f.length() == 2:
             for r in roots_binomial(f):
