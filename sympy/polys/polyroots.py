@@ -28,7 +28,7 @@ from sympy.utilities.solution import add_exp, add_eq, add_step, add_comment
 def roots_linear(f):
     """Returns a list of roots of a linear polynomial."""
     
-    add_comment('linear polynomial')
+    # add_comment('linear polynomial')
     add_eq(f.as_expr(), 0)
 
     r = -f.nth(0)/f.nth(1)
@@ -839,7 +839,7 @@ def roots(f, *gens, **flags):
             raise PolynomialError('multivariate polynomials are not supported')
 
     def _update_dict(result, root, k):
-        add_comment('add root: ' + str(root))
+        # add_comment('add root: ' + str(root))
         if root in result:
             result[root] += k
         else:

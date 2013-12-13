@@ -2,6 +2,25 @@ from sympy import reset_solution, last_solution, symbols, roots, Poly, roots
 
 x, y = symbols('x, y')
 
+
+
+reset_solution()
+P = Poly(x ** 4 + x ** 3 - 11 * x ** 2 - 5 * x + 30)
+a, P = Poly(P.as_expr()).factor_list()
+print (P)
+res = (roots(Poly(x ** 4 + x ** 3 - 11 * x ** 2 - 5 * x + 30), x))
+for i in res:
+	print (i)
+print
+R = last_solution()
+for i in R:
+	print i
+
+
+
+
+exit(0)
+
 # 169 - 174 are pages in Vilenkin
 # Here are some tests
 # just change the value on "n"
