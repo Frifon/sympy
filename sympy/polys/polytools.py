@@ -2911,7 +2911,6 @@ class Poly(Expr):
                 return S.One, [(f, 1)]
         else:  # pragma: no cover
             raise OperationNotSupported(f, 'factor_list')
-
         return f.rep.dom.to_sympy(coeff), [(f.per(g), k) for g, k in factors]
 
     def factor_list_include(f):

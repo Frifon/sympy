@@ -1190,7 +1190,6 @@ def dup_factor_list(f, K0):
             f = dup_convert(f, K0_inexact, K0)
         else:
             K0_inexact = None
-
         if K0.has_Field:
             K = K0.get_ring()
 
@@ -1198,7 +1197,6 @@ def dup_factor_list(f, K0):
             f = dup_convert(f, K0, K)
         else:
             K = K0
-
         if K.is_ZZ:
             coeff, factors = dup_zz_factor(f, K)
         elif K.is_Poly:
@@ -1229,7 +1227,7 @@ def dup_factor_list(f, K0):
 
                 coeff = K0_inexact.convert(coeff, K0)
                 K0 = K0_inexact
-
+    
     if j:
         factors.insert(0, ([K0.one, K0.zero], j))
 
@@ -1251,7 +1249,6 @@ def dmp_factor_list(f, u, K0):
     """Factor polynomials into irreducibles in `K[X]`. """
     if not u:
         return dup_factor_list(f, K0)
-
     J, f = dmp_terms_gcd(f, u, K0)
     cont, f = dmp_ground_primitive(f, u, K0)
 
