@@ -28,7 +28,6 @@ from sympy.utilities.solution import add_exp, add_eq, add_step, add_comment
 def roots_linear(f):
     """Returns a list of roots of a linear polynomial."""
     
-    add_comment('')
     # add_comment('linear polynomial')
     add_eq(f.as_expr(), 0)
 
@@ -42,6 +41,7 @@ def roots_linear(f):
             r = simplify(r)
     tmp = str(Poly(f.as_expr()).factor_list()).split(',')[2][1:]
     add_comment(tmp + ' = ' + str(r))
+    add_comment('')
     return [r]
 
 
@@ -50,7 +50,6 @@ def roots_quadratic(f):
    
     # add_comment('quadratic polynomial')
 
-    add_comment('')
     a, b, c = f.all_coeffs()
     dom = f.get_domain()
     add_comment('a * x ** 2 + b * x + c = 0')
@@ -66,7 +65,6 @@ def roots_quadratic(f):
     tmp = str(Poly(f.as_expr()).factor_list()).split(',')[2][1:]
 
     if c is S.Zero:
-        add_comment('c = 0')
         add_comment(tmp + '0 = 0')
         add_comment(tmp + '1 = -b/a')
         r0, r1 = S.Zero, -b/a
@@ -74,7 +72,6 @@ def roots_quadratic(f):
         if not dom.is_Numerical:
             r1 = _simplify(r1)
     elif b is S.Zero:
-        add_comment('b = 0')
         r = -c/a
         add_comment(tmp + ' = +-sqrt(-c/a)')
         if not dom.is_Numerical:
@@ -85,18 +82,18 @@ def roots_quadratic(f):
         r0 = R
         r1 = -R
     else:
-        D = b**2 - 4*a*c
-        add_comment('D = b ** 2 - 4 * a * c = ' + str(D))
-        add_comment(tmp + ' = (-b +- sqrt(d)) / (2 * a)')
-        D.clear_repr()
+        d = b**2 - 4*a*c
+        add_comment('d = b ** 2 - 4 * a * c = ' + str(d))
+        add_comment(tmp + '1,2 = (-b -+ sqrt(d)) / (2 * a)')
+        d.clear_repr()
         
         if dom.is_Numerical:
-            D = sqrt(D)
+            d = sqrt(d)
 
-            r0 = (-b + D) / (2*a)
-            r1 = (-b - D) / (2*a)
+            r0 = (-b + d) / (2*a)
+            r1 = (-b - d) / (2*a)
         else:
-            D = sqrt(_simplify(d))
+            d = sqrt(_simplify(d))
             A = 2*a
 
             E = _simplify(-b/A)
@@ -106,15 +103,11 @@ def roots_quadratic(f):
             r1 = E - F
 
     Roots = sorted([expand_2arg(i) for i in (r0, r1)], key=default_sort_key)
-    tmp += ' ='
-    ok = 0
+    num = 1
     for i in Roots:
-        if (ok == 0):
-            tmp += ' ' + str(i)
-            ok = 1
-        else:
-            tmp += ', ' + str(i)
-    add_comment(tmp)
+        add_comment(tmp + str(num) + ' = ' + str(i))
+        num += 1
+    add_comment('')
     return Roots
 
 def roots_cubic(f):
@@ -122,7 +115,6 @@ def roots_cubic(f):
 
     # add_comment('cubic polynomial')
 
-    add_comment('')
     _, a, b, c = f.monic().all_coeffs()
 
     if c is S.Zero:
@@ -190,6 +182,7 @@ def roots_cubic(f):
         -u3 + pon3/u3 - aon3
     ]
     add_step(roots)
+    add_comment('')
     return roots
 
 def _roots_quartic_euler(p, q, r, a):
@@ -374,7 +367,6 @@ def roots_binomial(f):
     """Returns a list of roots of a binomial polynomial."""
 
     # add_comment('binomial polynomial')
-    add_comment('')
     add_eq(f.as_expr(), 0)
     n = f.degree()
     
@@ -397,18 +389,11 @@ def roots_binomial(f):
 
     roots = sorted(roots, key=default_sort_key)
 
-    tmp += ' ='
-    ok = 0
+    num = 1
     for i in roots:
-        if (ok == 0):
-            tmp += ' ' + str(i)
-            ok = 1
-        else:
-            tmp += ', ' + str(i)
-
-    add_comment(tmp)
-    # add_step(roots)
-
+        add_comment(tmp + str(num) + ' = ' + str(i))
+        num += 1
+    add_comment('')
     return roots
 
 def _inv_totient_estimate(m):
@@ -1006,7 +991,11 @@ def roots(f, *gens, **flags):
                     tmp += '(' + str(factor.as_expr()) + ')'
                 tmp += ' = 0'
                 add_comment(tmp)
+                add_comment('')
+                num = 1
                 for factor, k in factors:
+                    add_comment(str(num) + ')')
+                    num += 1
                     # add_eq(factor.as_expr(), 0)
                     for r in _try_heuristics(Poly(factor, f.gen, field=True)):
                         _update_dict(result, r, k)
