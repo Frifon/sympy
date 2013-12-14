@@ -28,7 +28,6 @@ from sympy.utilities.solution import add_exp, add_eq, add_step, add_comment
 def roots_linear(f):
     """Returns a list of roots of a linear polynomial."""
     
-    # add_comment('linear polynomial')
     add_eq(f.as_expr(), 0)
 
     r = -f.nth(0)/f.nth(1)
@@ -48,8 +47,6 @@ def roots_linear(f):
 def roots_quadratic(f):
     """Returns a list of roots of a quadratic polynomial."""
    
-    # add_comment('quadratic polynomial')
-
     a, b, c = f.all_coeffs()
     dom = f.get_domain()
     add_comment('a * x ** 2 + b * x + c = 0')
@@ -112,8 +109,6 @@ def roots_quadratic(f):
 
 def roots_cubic(f):
     """Returns a list of roots of a cubic polynomial."""
-
-    # add_comment('cubic polynomial')
 
     _, a, b, c = f.monic().all_coeffs()
 
@@ -227,8 +222,6 @@ def _roots_quartic_euler(p, q, r, a):
     """
     from sympy.solvers import solve
     # solve the resolvent equation
-
-    # add_comment('quartic euler polynomial')
 
     x = Symbol('x')
     eq = 64*x**3 + 32*p*x**2 + (4*p**2 - 16*r)*x - q**2
@@ -366,7 +359,6 @@ def roots_quartic(f):
 def roots_binomial(f):
     """Returns a list of roots of a binomial polynomial."""
 
-    # add_comment('binomial polynomial')
     add_eq(f.as_expr(), 0)
     n = f.degree()
     
@@ -848,7 +840,6 @@ def roots(f, *gens, **flags):
             raise PolynomialError('multivariate polynomials are not supported')
 
     def _update_dict(result, root, k):
-        # add_comment('add root: ' + str(root))
         if root in result:
             result[root] += k
         else:
@@ -879,26 +870,17 @@ def roots(f, *gens, **flags):
     def _try_heuristics(f):
         """Find roots using formulas and some tricks. """
         
-        # add_comment('try some heuristics')
-        # add_eq(f.as_expr(), 0)
         if f.is_ground:
-            # add_comment('Polinomial is ground')
             return []
         if f.is_monomial:
-            # add_comment('Polinomial is monomial')
             rr = [S(0)]*f.degree()
-            # add_step(rr)
             return rr
 
         if f.length() == 2:
-            # add_comment('length = 2')
             if f.degree() == 1:
-                # add_comment('degree == 1')
                 rr = list(map(cancel, roots_linear(f)))
-                # add_step(rr)
                 return rr
             else:
-                # add_comment('degree != 1')
                 return roots_binomial(f)
 
         result = []
@@ -910,7 +892,6 @@ def roots(f, *gens, **flags):
                 break
 
         n = f.degree()
-        # add_comment('degree == ' + str(n))
         if n == 1:
             result += list(map(cancel, roots_linear(f)))
         elif n == 2:
@@ -949,19 +930,14 @@ def roots(f, *gens, **flags):
     result = {}
 
     if not f.is_ground:
-        # add_comment('Poly is not ground')
         if not f.get_domain().is_Exact:
             for r in f.nroots():
                 _update_dict(result, r, 1)
         elif f.degree() == 1:
             tmp = roots_linear(f)[0]
-            # add_comment('degree == 1')
-            # add_comment('add root: ' + str(tmp))
             result[tmp] = 1
         elif f.degree() == 2:
-            # add_comment('degree == 2')
             for r in roots_quadratic(f):
-                # add_comment('add root: ' + str(r))
                 _update_dict(result, r, 1)
         elif f.length() == 2:
             for r in roots_binomial(f):
@@ -996,7 +972,6 @@ def roots(f, *gens, **flags):
                 for factor, k in factors:
                     add_comment(str(num) + ')')
                     num += 1
-                    # add_eq(factor.as_expr(), 0)
                     for r in _try_heuristics(Poly(factor, f.gen, field=True)):
                         _update_dict(result, r, k)
 
