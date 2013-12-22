@@ -1422,7 +1422,7 @@ def _solve(f, *symbols, **flags):
 
 
 def _solve_system(exprs, symbols, **flags):
-    add_comment('solve system')
+    # add_comment('solve system')
     for i in exprs:
         add_eq(i.as_expr(), 0)
 

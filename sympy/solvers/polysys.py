@@ -226,12 +226,10 @@ def solve_generic(polys, opt):
 
         return solutions
 
-    add_comment('solve poly system')
     for i in polys:
         add_eq(i.as_expr(), 0)
 
     try:
-        add_comment('Recursive solving...')
         result = _solve_reduced_system(polys, opt.gens, entry=True)
         add_step(result)
     except CoercionFailed:

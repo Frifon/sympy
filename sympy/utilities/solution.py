@@ -38,9 +38,15 @@ def add_step(variable):
     v = str(variable)
     if v != r:
         # print "->", var, "=", v
+        if (len(solution_list) > 0):
+            if (solution_list[len(solution_list) - 1] == var + " = " + v):
+                return
         solution_list.append(var + " = " + v)
     else:
         # print "->", var, "=", r
+        if (len(solution_list) > 0):
+            if (solution_list[len(solution_list) - 1] == var + " = " + r):
+                return
         solution_list.append(var + " = " + r)
 
 def add_eq(l, r):
@@ -49,15 +55,24 @@ def add_eq(l, r):
     v = str(r)
     if v != rr:
         # print "->", repr(l), "=", v
+        if (len(solution_list) > 0):
+            if (solution_list[len(solution_list) - 1] == repr(l) + " = " + v):
+                return
         solution_list.append(repr(l) + " = " + v)
     else:
         # print "->", rr
+        if (len(solution_list) > 0):
+            if (solution_list[len(solution_list) - 1] == rr):
+                return
         solution_list.append(rr)
     
 def add_exp(exp):
     """Add an expression into solution"""
     r = repr(exp)
     # print "-> ", r
+    if (len(solution_list) > 0):
+        if (solution_list[len(solution_list) - 1] == r):
+            return
     solution_list.append(r)
 
 def reset_solution():

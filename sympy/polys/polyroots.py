@@ -29,6 +29,8 @@ def roots_linear(f):
     """Returns a list of roots of a linear polynomial."""
     
     add_eq(f.as_expr(), 0)
+    
+    tmp = str(Poly(f.as_expr()).factor_list()).split(',')[2][1:]
 
     r = -f.nth(0)/f.nth(1)
     dom = f.get_domain()
@@ -39,7 +41,8 @@ def roots_linear(f):
         else:
             r = simplify(r)
     tmp = str(Poly(f.as_expr()).factor_list()).split(',')[2][1:]
-    add_comment(tmp + ' = ' + str(r))
+    x = r
+    add_eq(tmp, r)
     add_comment('')
     return [r]
 
@@ -62,8 +65,10 @@ def roots_quadratic(f):
     tmp = str(Poly(f.as_expr()).factor_list()).split(',')[2][1:]
 
     if c is S.Zero:
-        add_comment(tmp + '0 = 0')
-        add_comment(tmp + '1 = -b/a')
+        x0 = 0
+        x1 = -b/a
+        add_eq(tmp + '1', x0)
+        add_eq(tmp + '2', x1)
         r0, r1 = S.Zero, -b/a
 
         if not dom.is_Numerical:
@@ -80,7 +85,7 @@ def roots_quadratic(f):
         r1 = -R
     else:
         d = b**2 - 4*a*c
-        add_comment('d = b ** 2 - 4 * a * c = ' + str(d))
+        add_eq('d = b ** 2 - 4 * a * c', str(d)) # Look here!
         add_comment(tmp + '1,2 = (-b -+ sqrt(d)) / (2 * a)')
         d.clear_repr()
         
@@ -100,10 +105,10 @@ def roots_quadratic(f):
             r1 = E - F
 
     Roots = sorted([expand_2arg(i) for i in (r0, r1)], key=default_sort_key)
-    num = 1
-    for i in Roots:
-        add_comment(tmp + str(num) + ' = ' + str(i))
-        num += 1
+    x1 = Roots[0]
+    x2 = Roots[1]
+    add_eq(tmp + '1', x1)
+    add_eq(tmp + '2', x2)
     add_comment('')
     return Roots
 
@@ -369,7 +374,7 @@ def roots_binomial(f):
     TMP = tmp
     if (n > 1):
         TMP += '**' + str(n)
-    add_comment(TMP + ' = ' + str(beta))
+    add_eq(TMP, str(beta))
     if alpha.is_number:
         alpha = alpha.expand(complex=True)
 
@@ -383,7 +388,7 @@ def roots_binomial(f):
 
     num = 1
     for i in roots:
-        add_comment(tmp + str(num) + ' = ' + str(i))
+        add_eq(tmp + str(num), str(i))
         num += 1
     add_comment('')
     return roots
