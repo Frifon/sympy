@@ -178,7 +178,7 @@ def solve_generic(polys, opt):
 
     def _solve_reduced_system(system, gens, entry=False):
         """Recursively solves reduced polynomial systems. """
-        print (system)
+        # print (system)
         if len(system) == len(gens) == 1:
             zeros = list(roots(system[0], gens[-1]).keys())
             return [ (zero,) for zero in zeros ]
